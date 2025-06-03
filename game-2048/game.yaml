@@ -17,13 +17,13 @@ spec:
       - image: public.ecr.aws/l6m2t8p7/docker-2048:latest
         imagePullPolicy: Always
         name: app-2048
+        resources: 
+          requests:
+            cpu: 1
+          limits:
+            memory: 512Mi
         ports:
         - containerPort: 80
-      resources: 
-        requests:
-          cpu: 1
-        limits:
-          memory: 512Mi
       topologySpreadConstraints:
       - topologyKey: topology.kubernetes.io/zone
         maxSkew: 1
