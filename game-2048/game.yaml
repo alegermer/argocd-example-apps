@@ -53,7 +53,9 @@ kind: IngressClassParams
 metadata:
   name: alb
 spec:
-  scheme: internet-facing
+  # We are using "internal" so it will not be publicly available, use
+  # "internet-facing" for exposing it to the internet on public subnet
+  scheme: internal
 ---
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
