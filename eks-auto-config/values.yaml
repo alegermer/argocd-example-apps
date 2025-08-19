@@ -1,0 +1,4 @@
+ingress:
+  scheme: internal
+  default: "true"
+  className: "alb-auto"

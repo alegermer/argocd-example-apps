@@ -1,0 +1,30 @@
+{{ $ingressName := .Values.ingress.className | default "alb" }}
+{{- if and (ne .Values.ingress.scheme "internal") (ne .Values.ingress.scheme "internet-facing") }}
+{{- fail "ingress.scheme must be either 'internal' or 'internet-facing'" }}
+{{- end }}
+# We assume the target cluster is EKS-Auto enabled with ALB support, so here configure the ingress
+# following https://docs.aws.amazon.com/eks/latest/userguide/auto-configure-alb.html
+apiVersion: eks.amazonaws.com/v1
+kind: IngressClassParams
+metadata:
+  name: {{ $ingressName }}
+spec:
+  # We are using "internal" so it will not be publicly available, use
+  # "internet-facing" for exposing it to the internet on public subnet
+  scheme: {{ .Values.ingress.scheme | default "internal" }}
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: {{ $ingressName }}
+  annotations:
+    # Use this annotation to set an IngressClass as Default
+    # If an Ingress doesn't specify a class, it will use the Default
+    ingressclass.kubernetes.io/is-default-class: "{{ .Values.ingress.default | default "true" }}"
+spec:
+  # Configures the IngressClass to use EKS Auto Mode
+  controller: eks.amazonaws.com/alb
+  parameters:
+    apiGroup: eks.amazonaws.com
+    kind: IngressClassParams
+    name: {{ $ingressName }}

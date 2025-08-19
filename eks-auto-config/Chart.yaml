@@ -1,0 +1,5 @@
+apiVersion: v2
+name: eks-auto-config
+description: Some common configuration for EKS Auto Clusters
+version: 0.1.0
+
